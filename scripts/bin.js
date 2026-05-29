@@ -77,8 +77,8 @@ function installToCursor() {
 }
 
 function installToClaude() {
-  const destFile = path.join(process.cwd(), '.claudecoderules');
-  console.log('Installing to Claude Code (.claudecoderules)...');
+  const destFile = path.join(process.cwd(), 'CLAUDE.md');
+  console.log('Installing to Claude Code (CLAUDE.md)...');
   let combinedContent = '# Vector Cadence Skills\n\n';
   
   const skillsDir = path.join(packageRootDir, 'skills');
@@ -97,12 +97,44 @@ function installToClaude() {
   }
   
   fs.writeFileSync(destFile, combinedContent, 'utf8');
-  console.log('- Created .claudecoderules at project root.');
+  console.log('- Created CLAUDE.md rule file at project root.');
+}
+
+function installToCodex() {
+  const destDir = path.join(process.cwd(), '.codex', 'skills');
+  console.log('Installing to Codex CLI (.codex/skills/)...');
+  fs.mkdirSync(destDir, { recursive: true });
+  
+  const skillsDir = path.join(packageRootDir, 'skills');
+  const entries = fs.readdirSync(skillsDir, { withFileTypes: true });
+  
+  for (let entry of entries) {
+    if (entry.isDirectory() && entry.name.startsWith('vc-')) {
+      copyDir(path.join(skillsDir, entry.name), path.join(destDir, entry.name));
+      console.log(`- Created skill folder: .codex/skills/${entry.name}`);
+    }
+  }
+}
+
+function installToOpenCode() {
+  const destDir = path.join(process.cwd(), '.opencode', 'skills');
+  console.log('Installing to OpenCode (.opencode/skills/)...');
+  fs.mkdirSync(destDir, { recursive: true });
+  
+  const skillsDir = path.join(packageRootDir, 'skills');
+  const entries = fs.readdirSync(skillsDir, { withFileTypes: true });
+  
+  for (let entry of entries) {
+    if (entry.isDirectory() && entry.name.startsWith('vc-')) {
+      copyDir(path.join(skillsDir, entry.name), path.join(destDir, entry.name));
+      console.log(`- Created skill folder: .opencode/skills/${entry.name}`);
+    }
+  }
 }
 
 function installToPi() {
   const destDir = path.join(process.cwd(), '.pi', 'skills');
-  console.log('Installing to Pi / Codex CLI (.pi/skills/)...');
+  console.log('Installing to Pi (.pi/skills/)...');
   fs.mkdirSync(destDir, { recursive: true });
   
   const skillsDir = path.join(packageRootDir, 'skills');
@@ -118,7 +150,7 @@ function installToPi() {
 
 function installToOmp() {
   const destDir = path.join(process.cwd(), '.omp', 'skills');
-  console.log('Installing to Oh-My-Pi / OpenCode (.omp/skills/)...');
+  console.log('Installing to Oh-My-Pi (.omp/skills/)...');
   fs.mkdirSync(destDir, { recursive: true });
   
   const skillsDir = path.join(packageRootDir, 'skills');
@@ -136,9 +168,11 @@ function installToOmp() {
 const args = process.argv.slice(2);
 const isAll = args.includes('--all');
 const isCursor = args.includes('--cursor') || isAll;
-const isClaude = args.includes('--claude') || isAll;
-const isPi = args.includes('--pi') || args.includes('--codex') || isAll;
-const isOmp = args.includes('--omp') || args.includes('--opencode') || isAll;
+const isClaude = args.includes('--claude') || args.includes('--claude-code') || isAll;
+const isCodex = args.includes('--codex') || args.includes('--codex-cli') || isAll;
+const isOpenCode = args.includes('--opencode') || isAll;
+const isPi = args.includes('--pi') || isAll;
+const isOmp = args.includes('--omp') || args.includes('--oh-my-pi') || isAll;
 const isAntigravity = args.includes('--antigravity') || args.length === 0;
 
 console.log('=== Vector Cadence Skills Installer ===\n');
@@ -156,6 +190,14 @@ try {
   }
   if (isClaude) {
     installToClaude();
+    executed = true;
+  }
+  if (isCodex) {
+    installToCodex();
+    executed = true;
+  }
+  if (isOpenCode) {
+    installToOpenCode();
     executed = true;
   }
   if (isPi) {
@@ -179,8 +221,10 @@ try {
     console.log('Tip: You can also deploy the skills locally to other agent tools in this project folder:');
     console.log('  npx vector-cadence-skills --cursor       (Cursor rules)');
     console.log('  npx vector-cadence-skills --claude       (Claude Code CLI rules)');
-    console.log('  npx vector-cadence-skills --pi           (Pi / Codex CLI skills)');
-    console.log('  npx vector-cadence-skills --omp          (Oh-My-Pi / OpenCode skills)');
+    console.log('  npx vector-cadence-skills --codex        (Codex CLI skills)');
+    console.log('  npx vector-cadence-skills --opencode     (OpenCode skills)');
+    console.log('  npx vector-cadence-skills --pi           (Pi skills)');
+    console.log('  npx vector-cadence-skills --omp          (Oh-My-Pi skills)');
     console.log('  npx vector-cadence-skills --all          (Install to all local project tools)');
   }
 } catch (error) {
