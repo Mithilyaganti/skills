@@ -1,8 +1,11 @@
 {
   "name": "vector-cadence-skills",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Integrated Vector Cadence skill suite for agentic software engineering workflows.",
   "main": "skills.json",
+  "bin": {
+    "vc-skills": "scripts/bin.js"
+  },
   "scripts": {
     "validate": "node scripts/validate-skills.mjs"
   },
@@ -31,6 +34,7 @@
     "scripts",
     "templates",
     "skills.json",
+    "plugin.json",
     "README.md",
     "DOCUMENTATION.md",
     "CHANGELOG.md",

@@ -1,0 +1,15 @@
+{
+  "name": "vector-cadence-skills",
+  "version": "0.1.1",
+  "description": "Integrated Vector Cadence skill suite for agentic software engineering workflows.",
+  "author": {
+    "name": "Mithil Yaganti"
+  },
+  "license": "Apache-2.0",
+  "keywords": [
+    "vector-cadence",
+    "skills",
+    "software-engineering",
+    "agentic"
+  ]
+}
