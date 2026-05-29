@@ -1,0 +1,4 @@
+monthly_limit_usd: 200
+tier_3_approval_threshold_usd: 10
+alert_at_percent: 80
+require_approval_for_tier_3: true

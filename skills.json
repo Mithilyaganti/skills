@@ -1,0 +1,98 @@
+{
+  "name": "vc-integrated-skills",
+  "version": "0.1.0",
+  "description": "Integrated Vector Cadence skill suite for agentic software engineering workflows.",
+  "slashCommandConvention": "Skills are named vc-*. Slash-command harnesses may expose them as /vc-*.",
+  "skills": [
+    {
+      "name": "vc-setup",
+      "path": "skills/vc-setup/SKILL.md",
+      "category": "setup",
+      "phase": "setup"
+    },
+    {
+      "name": "vc-orient",
+      "path": "skills/vc-orient/SKILL.md",
+      "category": "workflow",
+      "phase": "orientation"
+    },
+    {
+      "name": "vc-align",
+      "path": "skills/vc-align/SKILL.md",
+      "category": "workflow",
+      "phase": "alignment"
+    },
+    {
+      "name": "vc-plan",
+      "path": "skills/vc-plan/SKILL.md",
+      "category": "workflow",
+      "phase": "planning"
+    },
+    {
+      "name": "vc-slice",
+      "path": "skills/vc-slice/SKILL.md",
+      "category": "workflow",
+      "phase": "issue-decomposition"
+    },
+    {
+      "name": "vc-triage",
+      "path": "skills/vc-triage/SKILL.md",
+      "category": "workflow",
+      "phase": "triage"
+    },
+    {
+      "name": "vc-prototype",
+      "path": "skills/vc-prototype/SKILL.md",
+      "category": "workflow",
+      "phase": "prototyping"
+    },
+    {
+      "name": "vc-execute",
+      "path": "skills/vc-execute/SKILL.md",
+      "category": "workflow",
+      "phase": "execution"
+    },
+    {
+      "name": "vc-debug",
+      "path": "skills/vc-debug/SKILL.md",
+      "category": "workflow",
+      "phase": "debugging"
+    },
+    {
+      "name": "vc-review",
+      "path": "skills/vc-review/SKILL.md",
+      "category": "workflow",
+      "phase": "review"
+    },
+    {
+      "name": "vc-architecture",
+      "path": "skills/vc-architecture/SKILL.md",
+      "category": "workflow",
+      "phase": "application-architecture"
+    },
+    {
+      "name": "vc-learn",
+      "path": "skills/vc-learn/SKILL.md",
+      "category": "workflow",
+      "phase": "learning"
+    },
+    {
+      "name": "vc-handoff",
+      "path": "skills/vc-handoff/SKILL.md",
+      "category": "utility",
+      "phase": "handoff"
+    },
+    {
+      "name": "vc-harness-architect",
+      "path": "skills/vc-harness-architect/SKILL.md",
+      "category": "harness",
+      "phase": "harness-architecture"
+    },
+    {
+      "name": "vc-skill-author",
+      "path": "skills/vc-skill-author/SKILL.md",
+      "category": "authoring",
+      "phase": "skill-authoring"
+    }
+  ]
+}
