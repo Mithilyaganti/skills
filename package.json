@@ -1,0 +1,39 @@
+{
+  "name": "vector-cadence-skills",
+  "version": "0.1.0",
+  "description": "Integrated Vector Cadence skill suite for agentic software engineering workflows.",
+  "main": "skills.json",
+  "scripts": {
+    "validate": "node scripts/validate-skills.mjs"
+  },
+  "keywords": [
+    "vector-cadence",
+    "skills",
+    "agentic",
+    "ai",
+    "coding-agent",
+    "workflows"
+  ],
+  "author": "Mithil Yaganti",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mithilyaganti/skills.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Mithilyaganti/skills/issues"
+  },
+  "homepage": "https://github.com/Mithilyaganti/skills#readme",
+  "files": [
+    "skills",
+    "examples",
+    "references",
+    "scripts",
+    "templates",
+    "skills.json",
+    "README.md",
+    "DOCUMENTATION.md",
+    "CHANGELOG.md",
+    "CONTRIBUTING.md"
+  ]
+}
