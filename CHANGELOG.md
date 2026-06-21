@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.1.3
+
+- Updated folder target configurations for Codex CLI (`.codex/skills`), OpenCode (`.opencode/skills`), Pi (`.pi/skills`), and Claude Code (`CLAUDE.md`).
+
+## 0.1.2
+
+- Expanded installer to support deploying rules to various agent environments: Cursor, Claude Code, Pi/Codex, and Oh-My-Pi/OpenCode.
+
+## 0.1.1
+
+- Added installation CLI binary (`scripts/bin.js`) and `plugin.json` for NPM package distribution.
+
 ## 0.1.0
 
 - Added initial production-ready Vector Cadence integrated skill suite.

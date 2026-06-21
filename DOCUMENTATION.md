@@ -2,7 +2,7 @@
 
 ## Status
 
-This document describes the finalized production-oriented Vector Cadence skill suite in `skills/vc-integrated-skills/`.
+This document describes the finalized production-oriented Vector Cadence skill suite in the `skills/` directory.
 
 The suite started as an integration of Matt Pocock’s engineering skills and Compound Engineering’s skills, but the final version no longer exposes that integration history inside each runtime skill. Runtime skills are now concise operating procedures. Source comparisons, rationale, and architecture decisions live in documentation and reference files.
 
@@ -852,10 +852,10 @@ Important references:
 Validation command from the workspace root used in this environment:
 
 ```bash
-node vc-integrated-skills/scripts/validate-skills.mjs
+npm run validate
 ```
 
-If running from inside `vc-integrated-skills`, this also works:
+Or:
 
 ```bash
 node scripts/validate-skills.mjs
@@ -974,19 +974,17 @@ Use `references/source-integration-map.md` to explain upstream sources and integ
 
 ### 17.4 Run validation before publishing
 
-Run:
+From the project root directory, run:
+
+```bash
+npm run validate
+```
+
+Or:
 
 ```bash
 node scripts/validate-skills.mjs
 ```
-
-from inside `vc-integrated-skills`, or:
-
-```bash
-node vc-integrated-skills/scripts/validate-skills.mjs
-```
-
-from the parent directory.
 
 ### 17.5 Keep examples small
 
@@ -1017,9 +1015,9 @@ Includes:
 - changelog,
 - contributing guide.
 
-### Phase 2: Package as `vc-skills`
+### Phase 2: Package as `vc-skills` (Completed)
 
-Add package metadata and installer assumptions once the target harness format is chosen.
+Completed adding package metadata (`package.json`, `plugin.json`, `skills.json`) and an installer CLI (`scripts/bin.js`) to support Cursor, Claude Code, Pi, Codex, OpenCode, and Oh-My-Pi targets.
 
 ### Phase 3: Build `vc-extensions`
 
@@ -1069,7 +1067,7 @@ The final skill suite is now in the shape it should be for a publishable skill p
 
 The next best step is not more skill editing. The next best step is packaging and harness implementation:
 
-1. Treat `vc-integrated-skills` as the seed for `@your-scope/vc-skills`.
+1. Treat `vector-cadence-skills` as the seed for `@your-scope/vc-skills`.
 2. Build `vc-extensions` for actual tools.
 3. Build a thin pi-first `vc-cli` wrapper.
 4. Keep Reasonix/cache-first work behind telemetry and measurement.

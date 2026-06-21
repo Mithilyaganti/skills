@@ -1,6 +1,6 @@
 # Vector Cadence Skills — Architecture Overview
 
-This is the short architecture document for the new skill suite. It is intentionally smaller than the full research documentation. The full documentation can be written later when requested.
+This is the short architecture document for the new skill suite. The full, comprehensive documentation can be found in [DOCUMENTATION.md](file:///c:/Users/mithi/Desktop/mithil/skills/DOCUMENTATION.md).
 
 ## 1. What changed from the original Vector Cadence document
 

@@ -96,10 +96,42 @@ templates/AGENTS.md
 templates/CONTEXT.md
 templates/vc-budget.yml
 scripts/validate-skills.mjs
+scripts/bin.js
 skills.json
 examples/
 references/
 ```
+
+## Installation & Deployment
+
+Vector Cadence Skills can be installed globally as an npm package or executed directly to deploy rules and skills to various local development agent environments.
+
+### 1. Global Installation (Antigravity)
+By default, running the installer without arguments copies all skills and assets to the Antigravity global plugins directory:
+
+```bash
+# Install dependencies first
+npm install
+
+# Run the installer to deploy to Antigravity global config
+node scripts/bin.js
+
+# Or if installed globally / via npx:
+npx vc-skills
+```
+
+### 2. Deploying to Local Agent Tools
+You can deploy the skills as configuration rules directly to local agent environments in your active project directory. Use the corresponding CLI flags:
+
+| Target Environment | CLI Command | Target Location | Description |
+|---|---|---|---|
+| **Cursor** | `npx vc-skills --cursor` | `.cursor/rules/vc-*.md` | Deploys skills as Cursor rules |
+| **Claude Code** | `npx vc-skills --claude` | `CLAUDE.md` | Combines skills into a single `CLAUDE.md` rule file |
+| **Codex CLI** | `npx vc-skills --codex` | `.codex/skills/vc-*/` | Deploys skill directories to Codex |
+| **OpenCode** | `npx vc-skills --opencode` | `.opencode/skills/vc-*/` | Deploys skill directories to OpenCode |
+| **Pi** | `npx vc-skills --pi` | `.pi/skills/vc-*/` | Deploys skill directories to Pi |
+| **Oh-My-Pi** | `npx vc-skills --omp` | `.omp/skills/vc-*/` | Deploys skill directories to Oh-My-Pi |
+| **All targets** | `npx vc-skills --all` | (All of the above) | Deploys to all local targets simultaneously |
 
 ## Validation
 
