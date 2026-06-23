@@ -168,6 +168,14 @@ for (const file of skillFiles) {
 }
 
 for (const file of fs.readdirSync(root, { recursive: true })) {
+  const filePathStr = file.toString().replaceAll("\\", "/");
+  if (
+    filePathStr.includes("node_modules") ||
+    filePathStr.includes(".git") ||
+    path.basename(filePathStr).startsWith("session-")
+  ) {
+    continue;
+  }
   const full = path.join(root, file.toString());
   if (exists(full) && fs.statSync(full).isFile() && full.endsWith(".md")) {
     checkLinks(full, read(full));

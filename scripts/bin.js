@@ -77,27 +77,36 @@ function installToCursor() {
 }
 
 function installToClaude() {
-  const destFile = path.join(process.cwd(), 'CLAUDE.md');
-  console.log('Installing to Claude Code (CLAUDE.md)...');
-  let combinedContent = '# Vector Cadence Skills\n\n';
+  const destDir = path.join(process.cwd(), '.claude', 'skills');
+  console.log('Installing to Claude Code (.claude/skills/)...');
+  fs.mkdirSync(destDir, { recursive: true });
   
   const skillsDir = path.join(packageRootDir, 'skills');
   const entries = fs.readdirSync(skillsDir, { withFileTypes: true });
   
   for (let entry of entries) {
     if (entry.isDirectory() && entry.name.startsWith('vc-')) {
-      const srcFile = path.join(skillsDir, entry.name, 'SKILL.md');
-      if (fs.existsSync(srcFile)) {
-        const fileContent = fs.readFileSync(srcFile, 'utf8');
-        // Strip frontmatter metadata
-        const cleanContent = fileContent.replace(/^---[\s\S]*?---/, '').trim();
-        combinedContent += `## ${entry.name}\n\n${cleanContent}\n\n---\n\n`;
-      }
+      copyDir(path.join(skillsDir, entry.name), path.join(destDir, entry.name));
+      console.log(`- Created skill folder: .claude/skills/${entry.name}`);
     }
   }
-  
-  fs.writeFileSync(destFile, combinedContent, 'utf8');
-  console.log('- Created CLAUDE.md rule file at project root.');
+
+  // Create a lightweight CLAUDE.md template if it does not already exist
+  const claudeMdPath = path.join(process.cwd(), 'CLAUDE.md');
+  if (!fs.existsSync(claudeMdPath)) {
+    const defaultClaudeMd = `# Project Rules
+
+## Build, Test, and Lint Commands
+# Add your project-specific commands here, e.g.:
+# npm run dev
+# npm run test
+
+## Vector Cadence Skills
+Skills are installed locally at \`.claude/skills/\` and are automatically available as slash commands (e.g. \`/vc-align\`, \`/vc-execute\`).
+`;
+    fs.writeFileSync(claudeMdPath, defaultClaudeMd, 'utf8');
+    console.log('- Created starter CLAUDE.md at project root.');
+  }
 }
 
 function installToCodex() {

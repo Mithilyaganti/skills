@@ -126,7 +126,7 @@ You can deploy the skills as configuration rules directly to local agent environ
 | Target Environment | CLI Command | Target Location | Description |
 |---|---|---|---|
 | **Cursor** | `npx vc-skills --cursor` | `.cursor/rules/vc-*.md` | Deploys skills as Cursor rules |
-| **Claude Code** | `npx vc-skills --claude` | `CLAUDE.md` | Combines skills into a single `CLAUDE.md` rule file |
+| **Claude Code** | `npx vc-skills --claude` | `.claude/skills/vc-*/` | Deploys skill directories and a lightweight starter `CLAUDE.md` to Claude Code |
 | **Codex CLI** | `npx vc-skills --codex` | `.codex/skills/vc-*/` | Deploys skill directories to Codex |
 | **OpenCode** | `npx vc-skills --opencode` | `.opencode/skills/vc-*/` | Deploys skill directories to OpenCode |
 | **Pi** | `npx vc-skills --pi` | `.pi/skills/vc-*/` | Deploys skill directories to Pi |
