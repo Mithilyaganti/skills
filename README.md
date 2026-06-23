@@ -2,6 +2,30 @@
 
 Vector Cadence Skills is a production-ready skill suite for agentic software engineering workflows. It integrates the useful disciplines from Matt Pocock’s skills and Compound Engineering without making runtime skills depend on upstream command names or block-by-block composition.
 
+## Setup
+
+Install globally using `npm`:
+```bash
+npm install -g vector-cadence-skills
+```
+Or execute the installer directly using `npx`:
+```bash
+npx vc-skills
+```
+
+By default, executing `npx vc-skills` without arguments installs the skills globally to your **Antigravity** plugin config. 
+
+To deploy rules and skills locally to other agent environments in your current project folder, run:
+```bash
+npx vc-skills --cursor       # Cursor rules (.cursor/rules/)
+npx vc-skills --claude       # Claude Code skills (.claude/skills/)
+npx vc-skills --codex        # Codex CLI skills (.codex/skills/)
+npx vc-skills --opencode     # OpenCode skills (.opencode/skills/)
+npx vc-skills --pi           # Pi skills (.pi/skills/)
+npx vc-skills --omp          # Oh-My-Pi skills (.omp/skills/)
+npx vc-skills --all          # Deploys to all local environments simultaneously
+```
+
 ## Core idea
 
 Each skill owns one lifecycle responsibility:
