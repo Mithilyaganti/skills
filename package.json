@@ -1,6 +1,6 @@
 {
   "name": "vector-cadence-skills",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Integrated Vector Cadence skill suite for agentic software engineering workflows.",
   "main": "skills.json",
   "bin": {
