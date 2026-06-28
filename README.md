@@ -10,20 +10,20 @@ npm install -g vector-cadence-skills
 ```
 Or execute the installer directly using `npx`:
 ```bash
-npx vc-skills
+npx vector-cadence-skills
 ```
 
-By default, executing `npx vc-skills` without arguments installs the skills globally to your **Antigravity** plugin config. 
+By default, executing `npx vector-cadence-skills` without arguments installs the skills globally to your **Antigravity** plugin config. 
 
 To deploy rules and skills locally to other agent environments in your current project folder, run:
 ```bash
-npx vc-skills --cursor       # Cursor rules (.cursor/rules/)
-npx vc-skills --claude       # Claude Code skills (.claude/skills/)
-npx vc-skills --codex        # Codex CLI skills (.codex/skills/)
-npx vc-skills --opencode     # OpenCode skills (.opencode/skills/)
-npx vc-skills --pi           # Pi skills (.pi/skills/)
-npx vc-skills --omp          # Oh-My-Pi skills (.omp/skills/)
-npx vc-skills --all          # Deploys to all local environments simultaneously
+npx vector-cadence-skills --cursor       # Cursor rules (.cursor/rules/)
+npx vector-cadence-skills --claude       # Claude Code skills (.claude/skills/)
+npx vector-cadence-skills --codex        # Codex CLI skills (.codex/skills/)
+npx vector-cadence-skills --opencode     # OpenCode skills (.opencode/skills/)
+npx vector-cadence-skills --pi           # Pi skills (.pi/skills/)
+npx vector-cadence-skills --omp          # Oh-My-Pi skills (.omp/skills/)
+npx vector-cadence-skills --all          # Deploys to all local environments simultaneously
 ```
 
 ## Core idea
@@ -141,7 +141,7 @@ npm install
 node scripts/bin.js
 
 # Or if installed globally / via npx:
-npx vc-skills
+npx vector-cadence-skills
 ```
 
 ### 2. Deploying to Local Agent Tools
@@ -149,13 +149,13 @@ You can deploy the skills as configuration rules directly to local agent environ
 
 | Target Environment | CLI Command | Target Location | Description |
 |---|---|---|---|
-| **Cursor** | `npx vc-skills --cursor` | `.cursor/rules/vc-*.md` | Deploys skills as Cursor rules |
-| **Claude Code** | `npx vc-skills --claude` | `.claude/skills/vc-*/` | Deploys skill directories and a lightweight starter `CLAUDE.md` to Claude Code |
-| **Codex CLI** | `npx vc-skills --codex` | `.codex/skills/vc-*/` | Deploys skill directories to Codex |
-| **OpenCode** | `npx vc-skills --opencode` | `.opencode/skills/vc-*/` | Deploys skill directories to OpenCode |
-| **Pi** | `npx vc-skills --pi` | `.pi/skills/vc-*/` | Deploys skill directories to Pi |
-| **Oh-My-Pi** | `npx vc-skills --omp` | `.omp/skills/vc-*/` | Deploys skill directories to Oh-My-Pi |
-| **All targets** | `npx vc-skills --all` | (All of the above) | Deploys to all local targets simultaneously |
+| **Cursor** | `npx vector-cadence-skills --cursor` | `.cursor/rules/vc-*.md` | Deploys skills as Cursor rules |
+| **Claude Code** | `npx vector-cadence-skills --claude` | `.claude/skills/vc-*/` | Deploys skill directories and a lightweight starter `CLAUDE.md` to Claude Code |
+| **Codex CLI** | `npx vector-cadence-skills --codex` | `.codex/skills/vc-*/` | Deploys skill directories to Codex |
+| **OpenCode** | `npx vector-cadence-skills --opencode` | `.opencode/skills/vc-*/` | Deploys skill directories to OpenCode |
+| **Pi** | `npx vector-cadence-skills --pi` | `.pi/skills/vc-*/` | Deploys skill directories to Pi |
+| **Oh-My-Pi** | `npx vector-cadence-skills --omp` | `.omp/skills/vc-*/` | Deploys skill directories to Oh-My-Pi |
+| **All targets** | `npx vector-cadence-skills --all` | (All of the above) | Deploys to all local targets simultaneously |
 
 ## Validation
 

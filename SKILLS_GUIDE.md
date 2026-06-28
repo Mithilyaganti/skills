@@ -286,32 +286,37 @@ Starting fresh, clean chats for different steps is highly recommended to prevent
 
 Here is a practical walkthrough of how you can move across different chat sessions to build a feature:
 
-1. **Chat Session 1: Alignment (`vc-align`)**
-   * **Prompt**: *"I want to build a User Registration feature. Let's align using vc-align."*
+1. **Chat Session 1: Alignment (`vc-align`)** — Sonnet
+   * **Prompt**: `/vc-align I want to build a User Registration feature`
+   * **Model**: Sonnet is sufficient for conversational alignment. Use Opus for Deep-tier alignment (security, payments, architecture).
    * **Action**: You and the agent discuss questions about validation, registration methods, database schemas, and edge cases.
    * **Outcome**: The agent writes the alignment results to the repository at `docs/align-notes/2026-06-21-feat-user-registration-grilled.md`.
    * **Checkpoint**: Close this chat.
 
-2. **Chat Session 2: Technical Planning (`vc-plan`)**
-   * **Prompt (in a brand new chat)**: *"Plan the User Registration feature. Refer to the alignment notes in `docs/align-notes/2026-06-21-feat-user-registration-grilled.md`."*
+2. **Chat Session 2: Technical Planning (`vc-plan`)** — Opus
+   * **Prompt (in a brand new chat)**: `/vc-plan Plan the User Registration feature. Refer to docs/align-notes/2026-06-21-feat-user-registration-grilled.md`
+   * **Model**: Opus recommended. Planning requires deep reasoning across modules, dependencies, and risk assessment.
    * **Action**: The agent reads the notes file, scans the codebase, and proposes technical steps.
    * **Outcome**: The agent writes a detailed technical design to `docs/plans/2026-06-21-feat-user-registration-plan.md`.
    * **Checkpoint**: Close this chat.
 
-3. **Chat Session 3: Slicing (`vc-slice`)**
-   * **Prompt (in a brand new chat)**: *"Slice the plan at `docs/plans/2026-06-21-feat-user-registration-plan.md` into local issues."*
+3. **Chat Session 3: Slicing (`vc-slice`)** — Sonnet
+   * **Prompt (in a brand new chat)**: `/vc-slice Slice the plan at docs/plans/2026-06-21-feat-user-registration-plan.md into local issues`
+   * **Model**: Sonnet is sufficient. Slicing is structured decomposition from an existing plan.
    * **Action**: The agent parses the plan and breaks it down into end-to-end vertical deliverables.
    * **Outcome**: The agent saves tickets at `docs/issues/user-registration-01.md`, `docs/issues/user-registration-02.md`, etc.
    * **Checkpoint**: Close this chat.
 
-4. **Chat Session 4: Implementation (`vc-execute`)**
-   * **Prompt (in a brand new chat)**: *"Implement the ticket `docs/issues/user-registration-01.md` using vc-execute."*
+4. **Chat Session 4: Implementation (`vc-execute`)** — Sonnet
+   * **Prompt (in a brand new chat)**: `/vc-execute Implement the ticket at docs/issues/user-registration-01.md`
+   * **Model**: Sonnet for most implementation. Use Opus for complex logic, tricky integrations, or T3 safety-critical code.
    * **Action**: The agent reads the specific ticket, checks branch safety, runs tests, writes failing test cases (TDD), and updates the `task.md` file as progress is made.
    * **Outcome**: Source code changes are successfully written and verified with green tests.
    * **Checkpoint**: Keep this chat open if debugging is needed, or close it when complete.
 
-5. **Chat Session 5: Quality Review (`vc-review`)**
-   * **Prompt (in a brand new chat)**: *"Review the implementation of the user registration ticket using vc-review."*
+5. **Chat Session 5: Quality Review (`vc-review`)** — Opus
+   * **Prompt (in a brand new chat)**: `/vc-review Review the implementation of the user registration ticket`
+   * **Model**: Opus recommended. Reviews need to catch subtle correctness bugs, security issues, and spec gaps that faster models may miss.
    * **Action**: The agent compares the git diff of the branch/PR against the spec/acceptance criteria in the ticket file.
    * **Outcome**: A review summary table with a definitive merge verdict.
 
