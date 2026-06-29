@@ -76,20 +76,11 @@ function installToCursor() {
   }
 }
 
-function installToClaude() {
-  const destDir = path.join(process.cwd(), '.claude', 'skills');
-  console.log('Installing to Claude Code (.claude/skills/)...');
-  fs.mkdirSync(destDir, { recursive: true });
-  
-  const skillsDir = path.join(packageRootDir, 'skills');
-  const entries = fs.readdirSync(skillsDir, { withFileTypes: true });
-  
-  for (let entry of entries) {
-    if (entry.isDirectory() && entry.name.startsWith('vc-')) {
-      copyDir(path.join(skillsDir, entry.name), path.join(destDir, entry.name));
-      console.log(`- Created skill folder: .claude/skills/${entry.name}`);
-    }
-  }
+function installToClaudeLocal() {
+  installVcSkillsTo(
+    path.join(process.cwd(), '.claude', 'skills'),
+    'Claude Code (project: .claude/skills/)',
+  );
 
   // Create a lightweight CLAUDE.md template if it does not already exist
   const claudeMdPath = path.join(process.cwd(), 'CLAUDE.md');
@@ -107,6 +98,13 @@ Skills are installed locally at \`.claude/skills/\` and are automatically availa
     fs.writeFileSync(claudeMdPath, defaultClaudeMd, 'utf8');
     console.log('- Created starter CLAUDE.md at project root.');
   }
+}
+
+function installToClaudeGlobal() {
+  installVcSkillsTo(
+    path.join(os.homedir(), '.claude', 'skills'),
+    'Claude Code (global: ~/.claude/skills/)',
+  );
 }
 
 function installToCodex() {
@@ -173,32 +171,57 @@ function installToOmp() {
   }
 }
 
-function installToGrok() {
-  const destDir = path.join(process.cwd(), '.grok', 'skills');
-  console.log('Installing to Grok Build (.grok/skills/)...');
+function installVcSkillsTo(destDir, label) {
+  console.log(`Installing to ${label}...`);
   fs.mkdirSync(destDir, { recursive: true });
-  
+
   const skillsDir = path.join(packageRootDir, 'skills');
   const entries = fs.readdirSync(skillsDir, { withFileTypes: true });
-  
+
   for (let entry of entries) {
     if (entry.isDirectory() && entry.name.startsWith('vc-')) {
       copyDir(path.join(skillsDir, entry.name), path.join(destDir, entry.name));
-      console.log(`- Created skill folder: .grok/skills/${entry.name}`);
+      console.log(`- Created skill folder: ${path.join(destDir, entry.name)}`);
     }
   }
+}
+
+function installToGrokLocal() {
+  installVcSkillsTo(
+    path.join(process.cwd(), '.grok', 'skills'),
+    'Grok Build (project: .grok/skills/)',
+  );
+}
+
+function installToGrokGlobal() {
+  installVcSkillsTo(
+    path.join(os.homedir(), '.grok', 'skills'),
+    'Grok Build (global: ~/.grok/skills/)',
+  );
 }
 
 // CLI Execution Flow
 const args = process.argv.slice(2);
 const isAll = args.includes('--all');
 const isCursor = args.includes('--cursor') || isAll;
-const isClaude = args.includes('--claude') || args.includes('--claude-code') || isAll;
+const isClaudeLocal = args.includes('--claude-local') || args.includes('--claude-code-local');
+const isClaude =
+  (args.includes('--claude') ||
+    args.includes('--claude-code') ||
+    isAll) &&
+  !isClaudeLocal;
 const isCodex = args.includes('--codex') || args.includes('--codex-cli') || isAll;
 const isOpenCode = args.includes('--opencode') || isAll;
 const isPi = args.includes('--pi') || isAll;
 const isOmp = args.includes('--omp') || args.includes('--oh-my-pi') || isAll;
-const isGrok = args.includes('--grok') || args.includes('--grok-build') || isAll;
+const isGrokLocal = args.includes('--grok-local') || args.includes('--grok-build-local');
+const isGrok =
+  (args.includes('--grok') ||
+    args.includes('--grok-build') ||
+    args.includes('--grok-global') ||
+    args.includes('--grok-build-global') ||
+    isAll) &&
+  !isGrokLocal;
 const isAntigravity = args.includes('--antigravity') || args.length === 0;
 
 console.log('=== Vector Cadence Skills Installer ===\n');
@@ -214,8 +237,12 @@ try {
     installToCursor();
     executed = true;
   }
+  if (isClaudeLocal) {
+    installToClaudeLocal();
+    executed = true;
+  }
   if (isClaude) {
-    installToClaude();
+    installToClaudeGlobal();
     executed = true;
   }
   if (isCodex) {
@@ -234,8 +261,12 @@ try {
     installToOmp();
     executed = true;
   }
+  if (isGrokLocal) {
+    installToGrokLocal();
+    executed = true;
+  }
   if (isGrok) {
-    installToGrok();
+    installToGrokGlobal();
     executed = true;
   }
 
@@ -250,13 +281,15 @@ try {
     console.log('\n---');
     console.log('Tip: You can also deploy the skills locally to other agent tools in this project folder:');
     console.log('  npx vector-cadence-skills --cursor       (Cursor rules)');
-    console.log('  npx vector-cadence-skills --claude       (Claude Code CLI rules)');
+    console.log('  npx vector-cadence-skills --claude       (Claude Code skills, all projects)');
+    console.log('  npx vector-cadence-skills --claude-local (Claude Code skills, current project)');
     console.log('  npx vector-cadence-skills --codex        (Codex CLI skills)');
     console.log('  npx vector-cadence-skills --opencode     (OpenCode skills)');
     console.log('  npx vector-cadence-skills --pi           (Pi skills)');
     console.log('  npx vector-cadence-skills --omp          (Oh-My-Pi skills)');
-    console.log('  npx vector-cadence-skills --grok         (Grok Build skills)');
-    console.log('  npx vector-cadence-skills --all          (Install to all local project tools)');
+    console.log('  npx vector-cadence-skills --grok         (Grok Build skills, all projects)');
+    console.log('  npx vector-cadence-skills --grok-local   (Grok Build skills, current project)');
+    console.log('  npx vector-cadence-skills --all          (Install to all targets)');
   }
 } catch (error) {
   console.error('\nInstallation failed:', error.message);

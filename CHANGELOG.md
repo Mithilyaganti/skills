@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.0
+
+- Added Grok Build installer support with global (`--grok`) and project-local (`--grok-local`) targets.
+- Changed Claude Code installer: `--claude` now installs globally to `~/.claude/skills/`; use `--claude-local` for project-scoped installs.
+- Updated README and CLAUDE.md with global vs project-local install documentation.
+
 ## 0.1.3
 
 - Updated folder target configurations for Codex CLI (`.codex/skills`), OpenCode (`.opencode/skills`), Pi (`.pi/skills`), and Claude Code (`CLAUDE.md`).

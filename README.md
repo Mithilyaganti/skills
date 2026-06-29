@@ -18,13 +18,15 @@ By default, executing `npx vector-cadence-skills` without arguments installs the
 To deploy rules and skills locally to other agent environments in your current project folder, run:
 ```bash
 npx vector-cadence-skills --cursor       # Cursor rules (.cursor/rules/)
-npx vector-cadence-skills --claude       # Claude Code skills (.claude/skills/)
+npx vector-cadence-skills --claude       # Claude Code skills (global: ~/.claude/skills/)
+npx vector-cadence-skills --claude-local # Claude Code skills (project: .claude/skills/)
 npx vector-cadence-skills --codex        # Codex CLI skills (.codex/skills/)
 npx vector-cadence-skills --opencode     # OpenCode skills (.opencode/skills/)
 npx vector-cadence-skills --pi           # Pi skills (.pi/skills/)
 npx vector-cadence-skills --omp          # Oh-My-Pi skills (.omp/skills/)
-npx vector-cadence-skills --grok         # Grok Build skills (.grok/skills/)
-npx vector-cadence-skills --all          # Deploys to all local environments simultaneously
+npx vector-cadence-skills --grok         # Grok Build skills (global: ~/.grok/skills/)
+npx vector-cadence-skills --grok-local   # Grok Build skills (project: .grok/skills/)
+npx vector-cadence-skills --all          # Deploys to all targets simultaneously
 ```
 
 ## Core idea
@@ -151,13 +153,15 @@ You can deploy the skills as configuration rules directly to local agent environ
 | Target Environment | CLI Command | Target Location | Description |
 |---|---|---|---|
 | **Cursor** | `npx vector-cadence-skills --cursor` | `.cursor/rules/vc-*.md` | Deploys skills as Cursor rules |
-| **Claude Code** | `npx vector-cadence-skills --claude` | `.claude/skills/vc-*/` | Deploys skill directories and a lightweight starter `CLAUDE.md` to Claude Code |
+| **Claude Code (global)** | `npx vector-cadence-skills --claude` | `~/.claude/skills/vc-*/` | Deploys skill directories for use in every project |
+| **Claude Code (project)** | `npx vector-cadence-skills --claude-local` | `.claude/skills/vc-*/` | Deploys skill directories and a lightweight starter `CLAUDE.md` to the current project |
 | **Codex CLI** | `npx vector-cadence-skills --codex` | `.codex/skills/vc-*/` | Deploys skill directories to Codex |
 | **OpenCode** | `npx vector-cadence-skills --opencode` | `.opencode/skills/vc-*/` | Deploys skill directories to OpenCode |
 | **Pi** | `npx vector-cadence-skills --pi` | `.pi/skills/vc-*/` | Deploys skill directories to Pi |
 | **Oh-My-Pi** | `npx vector-cadence-skills --omp` | `.omp/skills/vc-*/` | Deploys skill directories to Oh-My-Pi |
-| **Grok Build** | `npx vector-cadence-skills --grok` | `.grok/skills/vc-*/` | Deploys skill directories to Grok Build |
-| **All targets** | `npx vector-cadence-skills --all` | (All of the above) | Deploys to all local targets simultaneously |
+| **Grok Build (global)** | `npx vector-cadence-skills --grok` | `~/.grok/skills/vc-*/` | Deploys skill directories for use in every project |
+| **Grok Build (project)** | `npx vector-cadence-skills --grok-local` | `.grok/skills/vc-*/` | Deploys skill directories to the current project only |
+| **All targets** | `npx vector-cadence-skills --all` | (All of the above) | Deploys to all targets simultaneously |
 
 ## Validation
 
