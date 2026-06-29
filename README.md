@@ -23,6 +23,7 @@ npx vector-cadence-skills --codex        # Codex CLI skills (.codex/skills/)
 npx vector-cadence-skills --opencode     # OpenCode skills (.opencode/skills/)
 npx vector-cadence-skills --pi           # Pi skills (.pi/skills/)
 npx vector-cadence-skills --omp          # Oh-My-Pi skills (.omp/skills/)
+npx vector-cadence-skills --grok         # Grok Build skills (.grok/skills/)
 npx vector-cadence-skills --all          # Deploys to all local environments simultaneously
 ```
 
@@ -155,6 +156,7 @@ You can deploy the skills as configuration rules directly to local agent environ
 | **OpenCode** | `npx vector-cadence-skills --opencode` | `.opencode/skills/vc-*/` | Deploys skill directories to OpenCode |
 | **Pi** | `npx vector-cadence-skills --pi` | `.pi/skills/vc-*/` | Deploys skill directories to Pi |
 | **Oh-My-Pi** | `npx vector-cadence-skills --omp` | `.omp/skills/vc-*/` | Deploys skill directories to Oh-My-Pi |
+| **Grok Build** | `npx vector-cadence-skills --grok` | `.grok/skills/vc-*/` | Deploys skill directories to Grok Build |
 | **All targets** | `npx vector-cadence-skills --all` | (All of the above) | Deploys to all local targets simultaneously |
 
 ## Validation

@@ -173,6 +173,22 @@ function installToOmp() {
   }
 }
 
+function installToGrok() {
+  const destDir = path.join(process.cwd(), '.grok', 'skills');
+  console.log('Installing to Grok Build (.grok/skills/)...');
+  fs.mkdirSync(destDir, { recursive: true });
+  
+  const skillsDir = path.join(packageRootDir, 'skills');
+  const entries = fs.readdirSync(skillsDir, { withFileTypes: true });
+  
+  for (let entry of entries) {
+    if (entry.isDirectory() && entry.name.startsWith('vc-')) {
+      copyDir(path.join(skillsDir, entry.name), path.join(destDir, entry.name));
+      console.log(`- Created skill folder: .grok/skills/${entry.name}`);
+    }
+  }
+}
+
 // CLI Execution Flow
 const args = process.argv.slice(2);
 const isAll = args.includes('--all');
@@ -182,6 +198,7 @@ const isCodex = args.includes('--codex') || args.includes('--codex-cli') || isAl
 const isOpenCode = args.includes('--opencode') || isAll;
 const isPi = args.includes('--pi') || isAll;
 const isOmp = args.includes('--omp') || args.includes('--oh-my-pi') || isAll;
+const isGrok = args.includes('--grok') || args.includes('--grok-build') || isAll;
 const isAntigravity = args.includes('--antigravity') || args.length === 0;
 
 console.log('=== Vector Cadence Skills Installer ===\n');
@@ -217,6 +234,10 @@ try {
     installToOmp();
     executed = true;
   }
+  if (isGrok) {
+    installToGrok();
+    executed = true;
+  }
 
   if (executed) {
     console.log('\nInstallation completed successfully!');
@@ -234,6 +255,7 @@ try {
     console.log('  npx vector-cadence-skills --opencode     (OpenCode skills)');
     console.log('  npx vector-cadence-skills --pi           (Pi skills)');
     console.log('  npx vector-cadence-skills --omp          (Oh-My-Pi skills)');
+    console.log('  npx vector-cadence-skills --grok         (Grok Build skills)');
     console.log('  npx vector-cadence-skills --all          (Install to all local project tools)');
   }
 } catch (error) {
