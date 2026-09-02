@@ -200,6 +200,20 @@ function installToGrokGlobal() {
   );
 }
 
+function installToZcodeLocal() {
+  installVcSkillsTo(
+    path.join(process.cwd(), '.zcode', 'skills'),
+    'ZCode (project: .zcode/skills/)',
+  );
+}
+
+function installToZcodeGlobal() {
+  installVcSkillsTo(
+    path.join(os.homedir(), '.zcode', 'skills'),
+    'ZCode (global: ~/.zcode/skills/)',
+  );
+}
+
 // CLI Execution Flow
 const args = process.argv.slice(2);
 const isAll = args.includes('--all');
@@ -222,6 +236,14 @@ const isGrok =
     args.includes('--grok-build-global') ||
     isAll) &&
   !isGrokLocal;
+const isZcodeLocal = args.includes('--zcode-local') || args.includes('--z-code-local');
+const isZcode =
+  (args.includes('--zcode') ||
+    args.includes('--z-code') ||
+    args.includes('--zcode-global') ||
+    args.includes('--z-code-global') ||
+    isAll) &&
+  !isZcodeLocal;
 const isAntigravity = args.includes('--antigravity') || args.length === 0;
 
 console.log('=== Vector Cadence Skills Installer ===\n');
@@ -269,6 +291,14 @@ try {
     installToGrokGlobal();
     executed = true;
   }
+  if (isZcodeLocal) {
+    installToZcodeLocal();
+    executed = true;
+  }
+  if (isZcode) {
+    installToZcodeGlobal();
+    executed = true;
+  }
 
   if (executed) {
     console.log('\nInstallation completed successfully!');
@@ -289,6 +319,8 @@ try {
     console.log('  npx vector-cadence-skills --omp          (Oh-My-Pi skills)');
     console.log('  npx vector-cadence-skills --grok         (Grok Build skills, all projects)');
     console.log('  npx vector-cadence-skills --grok-local   (Grok Build skills, current project)');
+    console.log('  npx vector-cadence-skills --zcode        (ZCode skills, all projects)');
+    console.log('  npx vector-cadence-skills --zcode-local  (ZCode skills, current project)');
     console.log('  npx vector-cadence-skills --all          (Install to all targets)');
   }
 } catch (error) {

@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.1
+
+- Added ZCode installer support with global (`--zcode`) and project-local (`--zcode-local`) targets (`~/.zcode/skills/` and `.zcode/skills/`).
+- Updated README and CLAUDE.md with ZCode installation commands and documentation.
+
 ## 0.2.0
 
 - Added Grok Build installer support with global (`--grok`) and project-local (`--grok-local`) targets.

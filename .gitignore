@@ -10,4 +10,6 @@ session-*.md
 .opencode/
 .pi/
 .omp/
+.grok/
+.zcode/
 package-lock.json

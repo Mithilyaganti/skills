@@ -26,6 +26,8 @@ npx vector-cadence-skills --pi           # Pi skills (.pi/skills/)
 npx vector-cadence-skills --omp          # Oh-My-Pi skills (.omp/skills/)
 npx vector-cadence-skills --grok         # Grok Build skills (global: ~/.grok/skills/)
 npx vector-cadence-skills --grok-local   # Grok Build skills (project: .grok/skills/)
+npx vector-cadence-skills --zcode        # ZCode skills (global: ~/.zcode/skills/)
+npx vector-cadence-skills --zcode-local  # ZCode skills (project: .zcode/skills/)
 npx vector-cadence-skills --all          # Deploys to all targets simultaneously
 ```
 
@@ -161,6 +163,8 @@ You can deploy the skills as configuration rules directly to local agent environ
 | **Oh-My-Pi** | `npx vector-cadence-skills --omp` | `.omp/skills/vc-*/` | Deploys skill directories to Oh-My-Pi |
 | **Grok Build (global)** | `npx vector-cadence-skills --grok` | `~/.grok/skills/vc-*/` | Deploys skill directories for use in every project |
 | **Grok Build (project)** | `npx vector-cadence-skills --grok-local` | `.grok/skills/vc-*/` | Deploys skill directories to the current project only |
+| **ZCode (global)** | `npx vector-cadence-skills --zcode` | `~/.zcode/skills/vc-*/` | Deploys skill directories for use in every project |
+| **ZCode (project)** | `npx vector-cadence-skills --zcode-local` | `.zcode/skills/vc-*/` | Deploys skill directories to the current project only |
 | **All targets** | `npx vector-cadence-skills --all` | (All of the above) | Deploys to all targets simultaneously |
 
 ## Validation
