@@ -7,6 +7,38 @@ const os = require('os');
 // Source directory (root of the package)
 const packageRootDir = path.resolve(__dirname, '..');
 
+// Resolve the DeepSeek Harness user-data root.
+// Mirrors @deepseek-ai/dsh-home-paths precedence: configured path, $DSH_HOME, ~/.dsh.
+function resolveDshHome() {
+  const configured = process.env.DSH_HOME;
+  if (typeof configured === 'string' && configured.trim() !== '') {
+    return path.resolve(configured.trim());
+  }
+  return path.join(os.homedir(), '.dsh');
+}
+
+// Display form of the DSH home, matching dshHomeDisplay() conventions.
+function dshHomeLabel() {
+  const configured = process.env.DSH_HOME;
+  if (typeof configured === 'string' && configured.trim() !== '') return '$DSH_HOME';
+  return '~/.dsh';
+}
+
+// Resolve the shared cross-agent skills root that DeepSeek Harness also scans.
+function resolveAgentsHome() {
+  const configured = process.env.DSH_AGENTS_HOME;
+  if (typeof configured === 'string' && configured.trim() !== '') {
+    return path.resolve(configured.trim());
+  }
+  return path.join(os.homedir(), '.agents');
+}
+
+function agentsHomeLabel() {
+  const configured = process.env.DSH_AGENTS_HOME;
+  if (typeof configured === 'string' && configured.trim() !== '') return '$DSH_AGENTS_HOME';
+  return '~/.agents';
+}
+
 // Helper to copy directory recursively
 function copyDir(src, dest) {
   if (!fs.existsSync(src)) return;
@@ -214,6 +246,39 @@ function installToZcodeGlobal() {
   );
 }
 
+// DeepSeek Harness project root: <project>/.dsh/skills (discovery rank 100).
+function installToDshLocal() {
+  installVcSkillsTo(
+    path.join(process.cwd(), '.dsh', 'skills'),
+    'DeepSeek Harness (project: .dsh/skills/)',
+  );
+}
+
+// DeepSeek Harness user root: <DSH_HOME>/skills (discovery rank 400).
+// Shared by DSH Desktop, DSH Terminal (TUI), and headless runs.
+function installToDshGlobal() {
+  installVcSkillsTo(
+    path.join(resolveDshHome(), 'skills'),
+    `DeepSeek Harness (global: ${dshHomeLabel()}/skills/)`,
+  );
+}
+
+// Shared agent root: <project>/.agents/skills (discovery rank 200).
+function installToAgentsLocal() {
+  installVcSkillsTo(
+    path.join(process.cwd(), '.agents', 'skills'),
+    'Shared agents (project: .agents/skills/)',
+  );
+}
+
+// Shared agent root: <DSH_AGENTS_HOME>/skills (discovery rank 500).
+function installToAgentsGlobal() {
+  installVcSkillsTo(
+    path.join(resolveAgentsHome(), 'skills'),
+    `Shared agents (global: ${agentsHomeLabel()}/skills/)`,
+  );
+}
+
 // CLI Execution Flow
 const args = process.argv.slice(2);
 const isAll = args.includes('--all');
@@ -244,6 +309,21 @@ const isZcode =
     args.includes('--z-code-global') ||
     isAll) &&
   !isZcodeLocal;
+const isDshLocal =
+  args.includes('--dsh-local') ||
+  args.includes('--deepseek-local') ||
+  args.includes('--deepseek-harness-local');
+const isDsh =
+  (args.includes('--dsh') ||
+    args.includes('--dsh-global') ||
+    args.includes('--deepseek') ||
+    args.includes('--deepseek-harness') ||
+    isAll) &&
+  !isDshLocal;
+const isAgentsLocal = args.includes('--agents-local');
+const isAgents =
+  (args.includes('--agents') || args.includes('--agents-global') || isAll) &&
+  !isAgentsLocal;
 const isAntigravity = args.includes('--antigravity') || args.length === 0;
 
 console.log('=== Vector Cadence Skills Installer ===\n');
@@ -299,6 +379,22 @@ try {
     installToZcodeGlobal();
     executed = true;
   }
+  if (isDshLocal) {
+    installToDshLocal();
+    executed = true;
+  }
+  if (isDsh) {
+    installToDshGlobal();
+    executed = true;
+  }
+  if (isAgentsLocal) {
+    installToAgentsLocal();
+    executed = true;
+  }
+  if (isAgents) {
+    installToAgentsGlobal();
+    executed = true;
+  }
 
   if (executed) {
     console.log('\nInstallation completed successfully!');
@@ -321,6 +417,10 @@ try {
     console.log('  npx vector-cadence-skills --grok-local   (Grok Build skills, current project)');
     console.log('  npx vector-cadence-skills --zcode        (ZCode skills, all projects)');
     console.log('  npx vector-cadence-skills --zcode-local  (ZCode skills, current project)');
+    console.log('  npx vector-cadence-skills --dsh          (DeepSeek Harness skills, all projects/profiles)');
+    console.log('  npx vector-cadence-skills --dsh-local    (DeepSeek Harness skills, current project)');
+    console.log('  npx vector-cadence-skills --agents       (shared .agents skills, all projects)');
+    console.log('  npx vector-cadence-skills --agents-local (shared .agents skills, current project)');
     console.log('  npx vector-cadence-skills --all          (Install to all targets)');
   }
 } catch (error) {

@@ -272,7 +272,7 @@ description: Does X. Use when Y.
 ---
 ```
 
-The `name` must match the folder name.
+The `name` must match the folder name and must be kebab-case (`^[a-z0-9]+(?:-[a-z0-9]+)*$`), because DeepSeek Harness rejects any other spelling and drops the skill from discovery.
 
 The `description` is especially important because skill loaders use it to decide when to load the skill.
 
@@ -283,6 +283,25 @@ Description rules:
 - says what the skill does,
 - includes `Use when`,
 - avoids vague “helps with” wording.
+
+#### DeepSeek Harness frontmatter contract
+
+DeepSeek Harness parses frontmatter as YAML and fails closed: one invalid field drops the entire skill instead of ignoring that field. The suite stays inside these rules:
+
+| Field | Rule |
+|---|---|
+| `name` | required, kebab-case, matches the folder |
+| `description` | required, non-empty string; the model catalog truncates at 500 characters |
+| `whenToUse` | optional string |
+| `metadata` | optional mapping |
+| `disable-model-invocation` | optional boolean; hides the skill from the model catalog |
+| `user-invocable` | optional boolean; hides the skill from human `/` invocation |
+
+Both invocation fields default to permitting their surface. The camel-case spellings `disableModelInvocation`, `modelInvocable`, and `userInvocable` are rejected outright, and booleans accept `true`/`false`, `yes`/`no`, `on`/`off`, and `1`/`0`.
+
+The layout must stay `<root>/<name>/SKILL.md`. DSH discovery is one level deep and deliberately ignores nested `**/SKILL.md` trees and package manifests.
+
+`scripts/validate-skills.mjs` enforces these rules statically, and `scripts/verify-dsh.mjs` checks an install against DeepSeek Harness's own provider and name grammar.
 
 ### 5.2 Purpose
 
@@ -816,13 +835,28 @@ It checks:
 
 - frontmatter exists,
 - `name` matches folder,
+- `name` is kebab-case (DeepSeek Harness grammar),
 - description exists and is under 1024 chars,
 - description includes `Use when`,
 - required runtime sections exist,
 - broken markdown links,
 - banned legacy runtime command names,
 - leftover `Integrated source decision`,
+- DeepSeek Harness invocation keys (`disable-model-invocation`, `user-invocable`) are canonical and boolean,
+- DeepSeek Harness `whenToUse` and `metadata` shapes,
+- catalog description length against the 500-character DeepSeek Harness cap,
+- nested frontmatter that the flat validator cannot check,
 - line-count warnings.
+
+### 14.3.1 DeepSeek Harness verification script
+
+Script:
+
+```text
+scripts/verify-dsh.mjs
+```
+
+Run with `npm run verify:dsh`. It does not re-implement any rule: it resolves the `@deepseek-ai/dsh-skill` and `@deepseek-ai/dsh-skill-filesystem` packages from a local DeepSeek Harness install, then runs the harness's real discovery path over the installed skills root. A pass means the running harness lists every skill, loads each body, and marks each as both model- and user-invocable. It exits `0` when compatible, `1` on a genuine incompatibility, and prints a skip notice when no local install is found.
 
 ### 14.4 Examples
 
@@ -861,10 +895,16 @@ Or:
 node scripts/validate-skills.mjs
 ```
 
+To verify the skills against an actual DeepSeek Harness install:
+
+```bash
+npm run verify:dsh
+```
+
 The current finalization pass produced:
 
 ```text
-Checked 15 skills.
+Checked 15 skills (including DeepSeek Harness frontmatter rules).
 Validation passed.
 ```
 
@@ -947,6 +987,21 @@ Slash-command harnesses may expose them as:
 
 Docs should prefer canonical names unless specifically describing a slash-command UI.
 
+DeepSeek Harness is such a harness. Its input trigger lists every user-invocable skill under `/`, and the host recognizes whitespace-bounded `/name` tokens naming user-invocable skills anywhere in a user message, injecting the rendered skill body for that turn. Because built-in DSH commands are adjudicated before a line becomes a prompt, the `vc-` prefix exists precisely so skill names cannot collide with commands such as `/plan`, `/compact`, or `/goal`.
+
+### 16.4 DeepSeek Harness install targets
+
+DeepSeek Harness Desktop, Terminal, TUI, and headless profiles all read the same skill roots, so one install serves every profile:
+
+| Rank | Source | Path | Installer flag |
+|---|---|---|---|
+| 100 | project DSH | `<project>/.dsh/skills` | `--dsh-local` |
+| 200 | project agents | `<project>/.agents/skills` | `--agents-local` |
+| 400 | user DSH | `$DSH_HOME/skills` (`~/.dsh/skills`) | `--dsh` |
+| 500 | user agents | `~/.agents/skills` | `--agents` |
+
+The installer resolves `$DSH_HOME` before falling back to `~/.dsh`, matching the harness's own home resolution, and `$DSH_AGENTS_HOME` overrides the shared agents root.
+
 ---
 
 ## 17. How to Maintain the Suite
@@ -1018,6 +1073,10 @@ Includes:
 ### Phase 2: Package as `vc-skills` (Completed)
 
 Completed adding package metadata (`package.json`, `plugin.json`, `skills.json`) and an installer CLI (`scripts/bin.js`) to support Cursor, Claude Code, Pi, Codex, OpenCode, and Oh-My-Pi targets.
+
+### Phase 2b: DeepSeek Harness support (Completed)
+
+Extended the installer with `--dsh` (global `$DSH_HOME/skills`), `--dsh-local` (`.dsh/skills`), `--agents`, and `--agents-local` targets, added DeepSeek Harness frontmatter rules to `scripts/validate-skills.mjs`, and added `scripts/verify-dsh.mjs`, which drives the harness's own filesystem skill provider to prove an install is discoverable.
 
 ### Phase 3: Build `vc-extensions`
 

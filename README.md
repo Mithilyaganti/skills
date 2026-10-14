@@ -28,8 +28,51 @@ npx vector-cadence-skills --grok         # Grok Build skills (global: ~/.grok/sk
 npx vector-cadence-skills --grok-local   # Grok Build skills (project: .grok/skills/)
 npx vector-cadence-skills --zcode        # ZCode skills (global: ~/.zcode/skills/)
 npx vector-cadence-skills --zcode-local  # ZCode skills (project: .zcode/skills/)
+npx vector-cadence-skills --dsh          # DeepSeek Harness skills (global: $DSH_HOME/skills/, default ~/.dsh/skills/)
+npx vector-cadence-skills --dsh-local    # DeepSeek Harness skills (project: .dsh/skills/)
+npx vector-cadence-skills --agents       # shared agent skills (global: ~/.agents/skills/)
+npx vector-cadence-skills --agents-local # shared agent skills (project: .agents/skills/)
 npx vector-cadence-skills --all          # Deploys to all targets simultaneously
 ```
+
+## DeepSeek Harness
+
+These skills are natively compatible with **DeepSeek Harness (DSH) Desktop** and the **DSH Terminal / TUI / headless** profiles. Both read the same skill roots, so one install serves every profile.
+
+Install once for all DSH profiles:
+
+```bash
+npx vector-cadence-skills --dsh
+```
+
+That writes `vc-*/SKILL.md` bundles to `<DSH_HOME>/skills/` (`~/.dsh/skills/` by default, or `$DSH_HOME/skills/` when `DSH_HOME` is set). Use `--dsh-local` to install into `<project>/.dsh/skills/` instead, which overrides the user root for that project only.
+
+### Using the skills in DSH
+
+- **Slash invocation** — type `/vc-align`, `/vc-plan`, `/vc-execute`, and so on. DSH's input trigger lists every user-invocable skill, and the host injects the full skill body into that turn.
+- **Model invocation** — the skills also appear in the model's skill catalog, so the agent loads `vc-plan` or `vc-debug` on its own when a task matches the description.
+- **No conflicts** — the `vc-` prefix cannot collide with built-in DSH commands such as `/plan`, `/compact`, or `/goal`.
+
+### DSH discovery roots
+
+DSH scans these roots in precedence order. The installer targets the first and second:
+
+| Rank | Source | Path | Installer flag |
+|---|---|---|---|
+| 100 | project DSH | `<project>/.dsh/skills` | `--dsh-local` |
+| 200 | project agents | `<project>/.agents/skills` | `--agents-local` |
+| 400 | user DSH | `$DSH_HOME/skills` (`~/.dsh/skills`) | `--dsh` |
+| 500 | user agents | `~/.agents/skills` | `--agents` |
+
+`$DSH_AGENTS_HOME` overrides the shared agents root.
+
+### Verify DSH compatibility
+
+```bash
+node scripts/verify-dsh.mjs
+```
+
+This loads DSH's own skill provider and name grammar from your local DSH install and runs the real discovery path over the installed root, so a pass means the running harness will actually list these skills. It exits `0` when compatible, `1` on a genuine incompatibility, and skips cleanly when no local DSH install exists.
 
 ## Core idea
 
@@ -125,6 +168,7 @@ templates/AGENTS.md
 templates/CONTEXT.md
 templates/vc-budget.yml
 scripts/validate-skills.mjs
+scripts/verify-dsh.mjs
 scripts/bin.js
 skills.json
 examples/
@@ -165,6 +209,10 @@ You can deploy the skills as configuration rules directly to local agent environ
 | **Grok Build (project)** | `npx vector-cadence-skills --grok-local` | `.grok/skills/vc-*/` | Deploys skill directories to the current project only |
 | **ZCode (global)** | `npx vector-cadence-skills --zcode` | `~/.zcode/skills/vc-*/` | Deploys skill directories for use in every project |
 | **ZCode (project)** | `npx vector-cadence-skills --zcode-local` | `.zcode/skills/vc-*/` | Deploys skill directories to the current project only |
+| **DeepSeek Harness (global)** | `npx vector-cadence-skills --dsh` | `$DSH_HOME/skills/vc-*/` (`~/.dsh/skills/vc-*/`) | Deploys skill directories for DSH Desktop, Terminal, TUI, and headless profiles |
+| **DeepSeek Harness (project)** | `npx vector-cadence-skills --dsh-local` | `.dsh/skills/vc-*/` | Deploys skill directories to the current project only |
+| **Shared agents (global)** | `npx vector-cadence-skills --agents` | `~/.agents/skills/vc-*/` | Deploys to the shared cross-agent root DSH also scans |
+| **Shared agents (project)** | `npx vector-cadence-skills --agents-local` | `.agents/skills/vc-*/` | Deploys to the project-local shared agent root |
 | **All targets** | `npx vector-cadence-skills --all` | (All of the above) | Deploys to all targets simultaneously |
 
 ## Validation
@@ -175,7 +223,9 @@ From this directory, run:
 node scripts/validate-skills.mjs
 ```
 
-The validator checks frontmatter, name/path consistency, description length, broken markdown links, banned legacy runtime command names, and line-count warnings.
+The validator checks frontmatter, name/path consistency, description length, broken markdown links, banned legacy runtime command names, and line-count warnings. It also enforces DeepSeek Harness frontmatter rules (kebab-case names, flat frontmatter, canonical invocation keys) because DSH drops a whole skill that violates one.
+
+To verify the skills against an actual DeepSeek Harness install, run `node scripts/verify-dsh.mjs`.
 
 ## When not to use full Vector Cadence
 
@@ -206,6 +256,7 @@ Recommended package split:
 ## Documentation
 
 - `DOCUMENTATION.md` — comprehensive architecture documentation.
+- `SKILLS_GUIDE.md` — lifecycle deep dive with per-skill workflows and multi-session recipes.
 - `references/architecture-overview.md` — shorter architecture overview.
 - `references/source-integration-map.md` — why each skill chose its source disciplines.
 - `references/minimal-mode.md` — how to use Vector Cadence without excess process.

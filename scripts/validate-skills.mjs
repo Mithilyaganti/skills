@@ -22,6 +22,13 @@ function rel(file) {
   return path.relative(root, file).replaceAll(path.sep, "/");
 }
 
+function parseScalar(raw) {
+  const value = raw.trim();
+  const quoted = value.match(/^(['"])([\s\S]*)\1$/);
+  if (quoted) return quoted[2];
+  return value;
+}
+
 function parseFrontmatter(text, file) {
   const normalized = text.replace(/^\uFEFF/, "").replaceAll("\r\n", "\n");
   if (!normalized.startsWith("---\n")) {
@@ -35,15 +42,21 @@ function parseFrontmatter(text, file) {
   }
   const raw = normalized.slice(4, end).trim();
   const data = {};
+  let nested = false;
   for (const line of raw.split(/\r?\n/)) {
+    if (line.trim() === "" || line.trimStart().startsWith("#")) continue;
+    if (/^\s+\S/.test(line)) {
+      nested = true;
+      continue;
+    }
     const match = line.match(/^([A-Za-z0-9_-]+):\s*(.*)$/);
     if (!match) {
       errors.push(`${rel(file)}: invalid frontmatter line: ${line}`);
       continue;
     }
-    data[match[1]] = match[2].trim().replace(/^['"]|['"]$/g, "");
+    data[match[1]] = parseScalar(match[2]);
   }
-  return data;
+  return { data, nested };
 }
 
 function checkLinks(file, text) {
@@ -101,6 +114,68 @@ const skillFiles = fs
 
 if (skillFiles.length === 0) errors.push("No vc-*/SKILL.md files found");
 
+// DeepSeek Harness skill rules, mirrored from @deepseek-ai/dsh-skill and
+// @deepseek-ai/dsh-skill-filesystem. A violation of a hard rule makes the whole
+// skill invisible to DSH discovery instead of merely degrading it.
+const DSH_SKILL_NAME = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+const DSH_CATALOG_DESCRIPTION_MAX = 500;
+const DSH_LEGACY_INVOCATION_KEYS = [
+  ["disableModelInvocation", "disable-model-invocation"],
+  ["modelInvocable", "disable-model-invocation"],
+  ["userInvocable", "user-invocable"],
+];
+const DSH_BOOLEAN_KEYS = ["disable-model-invocation", "user-invocable"];
+const DSH_BOOLEAN_VALUES = new Set([
+  "true",
+  "false",
+  "yes",
+  "no",
+  "on",
+  "off",
+  "1",
+  "0",
+]);
+
+function checkDshFrontmatter(fm, file) {
+  const data = fm.data;
+  if (fm.nested) {
+    warnings.push(
+      `${rel(file)}: frontmatter has nested/indented values; keep skill frontmatter flat so every loader parses it identically`,
+    );
+  }
+  if (data.name && !DSH_SKILL_NAME.test(data.name))
+    errors.push(
+      `${rel(file)}: name "${data.name}" is not kebab-case; DeepSeek Harness requires /^[a-z0-9]+(?:-[a-z0-9]+)*$/`,
+    );
+  for (const [legacy, canonical] of DSH_LEGACY_INVOCATION_KEYS) {
+    if (Object.hasOwn(data, legacy))
+      errors.push(
+        `${rel(file)}: frontmatter field "${legacy}" is unsupported by DeepSeek Harness; use "${canonical}"`,
+      );
+  }
+  for (const key of DSH_BOOLEAN_KEYS) {
+    if (!Object.hasOwn(data, key)) continue;
+    const value = String(data[key]).toLowerCase();
+    if (!DSH_BOOLEAN_VALUES.has(value))
+      errors.push(
+        `${rel(file)}: "${key}" must be a boolean (true/false, yes/no, on/off, 1/0); DeepSeek Harness drops the whole skill otherwise`,
+      );
+  }
+  if (Object.hasOwn(data, "whenToUse") && !String(data.whenToUse).trim())
+    warnings.push(`${rel(file)}: "whenToUse" is present but empty; omit it instead`);
+  if (Object.hasOwn(data, "metadata"))
+    warnings.push(
+      `${rel(file)}: "metadata" must be a YAML mapping for DeepSeek Harness; verify it parses as one`,
+    );
+  if (
+    data.description &&
+    data.description.length > DSH_CATALOG_DESCRIPTION_MAX
+  )
+    warnings.push(
+      `${rel(file)}: description is ${data.description.length} chars; DeepSeek Harness truncates the catalog entry at ${DSH_CATALOG_DESCRIPTION_MAX}`,
+    );
+}
+
 const bannedRuntimePatterns = [
   {
     pattern: /Integrated source decision/i,
@@ -129,17 +204,19 @@ for (const file of skillFiles) {
   const dirName = path.basename(path.dirname(file));
 
   if (fm) {
-    if (fm.name !== dirName)
+    const data = fm.data;
+    if (data.name !== dirName)
       errors.push(
-        `${rel(file)}: name ${fm.name || "<missing>"} does not match directory ${dirName}`,
+        `${rel(file)}: name ${data.name || "<missing>"} does not match directory ${dirName}`,
       );
-    if (!fm.description) errors.push(`${rel(file)}: missing description`);
-    if (fm.description && fm.description.length > 1024)
+    if (!data.description) errors.push(`${rel(file)}: missing description`);
+    if (data.description && data.description.length > 1024)
       errors.push(`${rel(file)}: description exceeds 1024 chars`);
-    if (fm.description && !/Use when/i.test(fm.description))
+    if (data.description && !/Use when/i.test(data.description))
       warnings.push(
         `${rel(file)}: description should include "Use when" trigger language`,
       );
+    checkDshFrontmatter(fm, file);
   }
 
   if (lines > 170)
@@ -182,7 +259,9 @@ for (const file of fs.readdirSync(root, { recursive: true })) {
   }
 }
 
-console.log(`Checked ${skillFiles.length} skills.`);
+console.log(
+  `Checked ${skillFiles.length} skills (including DeepSeek Harness frontmatter rules).`,
+);
 if (warnings.length) {
   console.log(`\nWarnings (${warnings.length}):`);
   for (const warning of warnings) console.log(`- ${warning}`);

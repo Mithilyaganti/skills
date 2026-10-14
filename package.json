@@ -1,13 +1,14 @@
 {
   "name": "vector-cadence-skills",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "Integrated Vector Cadence skill suite for agentic software engineering workflows.",
   "main": "skills.json",
   "bin": {
     "vc-skills": "scripts/bin.js"
   },
   "scripts": {
-    "validate": "node scripts/validate-skills.mjs"
+    "validate": "node scripts/validate-skills.mjs",
+    "verify:dsh": "node scripts/verify-dsh.mjs"
   },
   "keywords": [
     "vector-cadence",
@@ -15,7 +16,11 @@
     "agentic",
     "ai",
     "coding-agent",
-    "workflows"
+    "workflows",
+    "deepseek",
+    "deepseek-harness",
+    "dsh",
+    "agent-skills"
   ],
   "author": "Mithil Yaganti",
   "license": "Apache-2.0",
@@ -37,6 +42,7 @@
     "plugin.json",
     "README.md",
     "DOCUMENTATION.md",
+    "SKILLS_GUIDE.md",
     "CHANGELOG.md",
     "CONTRIBUTING.md"
   ]

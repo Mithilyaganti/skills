@@ -1,6 +1,6 @@
 {
   "name": "vector-cadence-skills",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "Integrated Vector Cadence skill suite for agentic software engineering workflows.",
   "author": {
     "name": "Mithil Yaganti"
@@ -10,6 +10,8 @@
     "vector-cadence",
     "skills",
     "software-engineering",
-    "agentic"
+    "agentic",
+    "deepseek-harness",
+    "dsh"
   ]
 }

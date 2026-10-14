@@ -12,4 +12,6 @@ session-*.md
 .omp/
 .grok/
 .zcode/
+.dsh/
+.agents/
 package-lock.json
